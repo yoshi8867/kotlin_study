@@ -1,5 +1,6 @@
 package com.example.jetpackcomposestudy
 
+import android.R.attr.text
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -46,27 +47,118 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import kotlinx.coroutines.launch
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            StudyTextField()
-//            var isFavorite by rememberSaveable {
-//                mutableStateOf(false)
-//            }
-//            StudyCard(
-//                modifier = Modifier
-//                    .fillMaxWidth(0.5f)
-//                    .padding(10.dp),
-//                isFavorite = isFavorite,
-//            ) { favorite ->
-//                isFavorite = favorite
-//            }
+            val navController = rememberNavController()
+            NavHost(
+                navController = navController,
+                startDestination = "main",
+            ) {
+                composable("main") {
+                    MainScreen(navController)
+                }
+                composable("first") {
+                    FirstScreen(navController)
+                }
+                composable("second/{value}") {backStackEntry ->
+                    SecondScreen(
+                        navController = navController,
+                        text = backStackEntry.arguments?.getString("value") ?: "",
+                    )
+                }
+            }
         }
     }
+}
+
+@Composable
+fun MainScreen(navController: NavController) {
+    val (value, setValue) = rememberSaveable {
+        mutableStateOf("")
+    }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text("MAIN")
+        Spacer(modifier = Modifier.height(10.dp))
+        Button(
+            onClick = {
+                navController.navigate("first")
+            }
+        ) {
+            Text("first")
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        TextField(
+            value = value,
+            onValueChange = setValue,
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Button(
+            onClick = {
+                navController.navigate("second/$value")
+            }
+        ) {
+            Text("second")
+        }
+    }
+}
+
+@Composable
+fun FirstScreen(navController: NavController) {
+    val (value, setValue) = rememberSaveable {
+        mutableStateOf("")
+    }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text("FIRST")
+        Spacer(modifier = Modifier.height(10.dp))
+        Button(
+            onClick = {
+                navController.navigateUp()
+            }
+        ) {
+            Text("back")
+        }
+    }
+
+}
+
+@Composable
+fun SecondScreen(navController: NavController, text: String) {
+    val (value, setValue) = rememberSaveable {
+        mutableStateOf("")
+    }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text("SECOND $text")
+        Spacer(modifier = Modifier.height(10.dp))
+        Button(
+            onClick = {
+                navController.navigateUp()
+            }
+        ) {
+            Text("back")
+        }
+    }
+
 }
 
 @Composable
@@ -178,5 +270,4 @@ fun StudyButtonClick() {
 @Preview(showBackground = true)
 @Composable
 fun StudyLazyColumnPreview() {
-    StudyTextField()
 }
