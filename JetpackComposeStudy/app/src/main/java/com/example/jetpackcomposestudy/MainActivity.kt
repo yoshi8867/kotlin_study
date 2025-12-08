@@ -43,39 +43,75 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import kotlinx.coroutines.launch
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.runtime.State
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
-            NavHost(
+            
+        }
+    }
+}
+
+@Composable
+fun ForViewModelTest() {
+    val viewModel = viewModel<MainViewModel>()
+    // val text = remember { mutableStateOf("") }
+    Column (
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text("HELLO ${viewModel.data.value}")
+        Spacer(modifier = Modifier.height(10.dp))
+        Button(onClick = {
+            viewModel.changeValue()
+        }) {
+            Text("Click")
+        }
+    }
+}
+
+class MainViewModel : ViewModel() {
+    private val _data = mutableStateOf("")
+    val data: State<String> = _data
+
+    fun changeValue() {
+        _data.value = "WORLD"
+    }
+}
+
+@Composable
+fun ScreenContainer() {
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = "main",
+    ) {
+        composable("main") {
+            MainScreen(navController)
+        }
+        composable("first") {
+            FirstScreen(navController)
+        }
+        composable("second/{value}") {backStackEntry ->
+            SecondScreen(
                 navController = navController,
-                startDestination = "main",
-            ) {
-                composable("main") {
-                    MainScreen(navController)
-                }
-                composable("first") {
-                    FirstScreen(navController)
-                }
-                composable("second/{value}") {backStackEntry ->
-                    SecondScreen(
-                        navController = navController,
-                        text = backStackEntry.arguments?.getString("value") ?: "",
-                    )
-                }
-            }
+                text = backStackEntry.arguments?.getString("value") ?: "",
+            )
         }
     }
 }
@@ -267,7 +303,11 @@ fun StudyButtonClick() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(
+    showBackground = true,
+    showSystemUi = true,
+    )
 @Composable
-fun StudyLazyColumnPreview() {
+fun Preview() {
+    ForViewModelTest()
 }
