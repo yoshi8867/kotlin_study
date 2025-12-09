@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -170,10 +171,61 @@ fun CustomImage(image: Int, modifier: Modifier = Modifier) {
     )
 }
 
+@Composable
+fun RowColDemoScreen() {
+    Row (
+        modifier = Modifier
+            .border(width = 2.dp, color = Color.Blue)
+            .size(450.dp, 150.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        TextCell("1", Modifier.weight(weight = 0.2f, fill = true))
+        TextCell("2", Modifier.weight(weight = 0.3f, fill = true))
+        TextCell("3", Modifier.weight(weight = 0.5f, fill = true))
+    }
+
+    Column (
+        modifier = Modifier
+            .border(width = 2.dp, color = Color.Black)
+            .size(150.dp, 550.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.End,
+    ) {
+        TextCell("1", Modifier.align(Alignment.CenterHorizontally))
+        TextCell("2", Modifier.align(Alignment.Start))
+        TextCell("3", Modifier.align(Alignment.End))
+    }
+}
+
+@Composable
+fun TextCell(text: String, modifier: Modifier = Modifier) {
+    val cellModifier = Modifier
+        .padding(all = 4.dp)
+        .size(100.dp, 100.dp)
+        .border(width = 2.dp, color = Color.Magenta)
+
+    Text(text = text,
+        cellModifier.then(modifier),
+        fontSize = 70.sp,
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.Center,
+    )
+}
+
 @Preview(
     showBackground = true,
     showSystemUi = true,
 )
+@Composable
+fun RowColDemoPreview() {
+    RowColDemoScreen()
+}
+
+//@Preview(
+//    showBackground = true,
+//    showSystemUi = true,
+//)
 @Composable
 fun Preview() {
     val txt = remember { mutableStateOf("GOOD") }
@@ -191,7 +243,6 @@ fun Preview() {
                     .border(width = 2.dp, color = Color.Black)
                     .padding(all = 10.dp)
                     .clip(shape = RoundedCornerShape(60.dp))
-
             )
         }
     }
