@@ -2,6 +2,7 @@ package com.example.composestudydemo251209
 
 import android.os.Bundle
 import android.util.Log
+import android.util.Log.i
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -10,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,6 +44,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composestudydemo251209.ui.theme.ComposeStudyDemo251209Theme
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -236,14 +240,29 @@ suspend fun performSlowTask() {
 
 @Composable
 fun StudyCoroutine() {
-    val coroutineScope = rememberCoroutineScope()
+    val coroutineScope1 = rememberCoroutineScope()
+    val coroutineScope2 = rememberCoroutineScope()
+    val channel = Channel<Int>()
 
-    Button(onClick = {
-        coroutineScope.launch {
-            performSlowTask()
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+        ) {
+        Button(onClick = {
+            coroutineScope1.launch {
+                for (i in 1..6) {
+                    delay(500)
+                    channel.send(i)
+                }
+            }
+            coroutineScope2.launch {
+                repeat(6) {
+                    Log.d("coroutin test", "${channel.receive()}")
+                }
+            }
+        }) {
+            Text("TEST")
         }
-    }) {
-        Text("5 sec")
     }
 }
 
