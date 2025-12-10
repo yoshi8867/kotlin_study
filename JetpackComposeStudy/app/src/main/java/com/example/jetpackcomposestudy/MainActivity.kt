@@ -4,6 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.repeatable
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +24,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -31,10 +42,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,7 +62,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.System.exit
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -297,11 +312,83 @@ fun StudyButtonClick() {
     }
 }
 
+@Composable
+fun AnimationScreen() {
+    var visibility by remember { mutableStateOf(true) }
+
+    Column(
+        modifier = Modifier
+            .size(200.dp, 200.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Button({
+            visibility = !visibility
+        }) {
+            Text("toggle")
+        }
+        AnimatedVisibility (
+            visible = visibility,
+            enter = fadeIn(
+                animationSpec = tween(durationMillis = 2500)
+            ),
+            exit = fadeOut(),
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(150.dp, 150.dp)
+                    .background(Color.LightGray),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text("HELLO WORLD")
+            }
+        }
+    }
+}
+
+@Composable
+fun AsStateDemo() {
+    var temperature by remember { mutableStateOf(36.5) }
+    
+    val animatedColor: Color by animateColorAsState(
+        targetValue = if (temperature >= 37.5) {
+            Color.Red
+        } else {
+            Color.Green
+        },
+        animationSpec = tween(500),
+    )
+
+    Box(
+        modifier = Modifier
+            .size(150.dp, 150.dp)
+            .background(animatedColor),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text("HELLO WORLD")
+    }
+
+    val coroutineScope = rememberCoroutineScope()
+    Button({
+        coroutineScope.launch {
+            for (i in 1..100) {
+                temperature += 0.5
+                delay(500)
+                if (temperature > 38) {
+                    temperature = 36.5
+                }
+            }
+        }
+    }) {
+        Text("CLICK")
+    }
+}
+
 @Preview(
     showBackground = true,
-    showSystemUi = true,
+//    showSystemUi = true,
     )
 @Composable
 fun Preview() {
-    ForViewModelTest()
+    AsStateDemo()
 }
