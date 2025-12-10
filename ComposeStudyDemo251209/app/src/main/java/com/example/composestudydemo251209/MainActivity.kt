@@ -2,14 +2,12 @@ package com.example.composestudydemo251209
 
 import android.os.Bundle
 import android.util.Log
-import android.util.Log.i
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +18,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,7 +35,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,9 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.composestudydemo251209.ui.theme.ComposeStudyDemo251209Theme
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -266,10 +263,54 @@ fun StudyCoroutine() {
     }
 }
 
+@Composable
+fun LazyColumnScrollDemoScreen() {
+    val listState = rememberLazyListState()
+    val menu = listOf("요리 탕수육", "요리 깐풍기", "요리 팔보채",
+        "식사 짜장면", "식사 짬뽕", "식사 볶음밥",
+        "후식 탕후루", "후식 망고푸딩", "후식 도나스",
+        "음료 콜라", "음료 사이다", "음료 제로콜라", "음료 환타오렌지", "음료 환타레몬",
+        "주류 소주", "주류 맥주", "주류 공부가주", "주류 연태고량", "주류 수정방",
+        )
+    val groupedMenu = menu.groupBy { it.substringBefore(' ')}
+    LazyColumn(
+        state = listState,
+    ) {
+//        for (i in 1..100) {
+//            item {
+//                Text(
+//                    text = "item ${i}",
+//                    fontSize = 40.sp,
+//                )
+//            }
+//        }
+
+        groupedMenu.forEach { (group, menu) ->
+            stickyHeader {
+                Text(
+                    text = group,
+                    color = Color.Red,
+                    fontSize = 40.sp,
+                    modifier = Modifier.background(Color.Gray),
+                )
+            }
+
+            items(menu) { menu ->
+                Text(
+                    text = menu,
+                    color = Color.Blue,
+                    fontSize = 40.sp,
+                )
+            }
+        }
+    }
+}
+
 @Preview(
     showBackground = true,
+    showSystemUi = true,
 )
 @Composable
 fun Preview() {
-    StudyCoroutine()
+    LazyColumnScrollDemoScreen()
 }
