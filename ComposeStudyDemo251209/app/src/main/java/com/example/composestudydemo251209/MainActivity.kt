@@ -1,6 +1,7 @@
 package com.example.composestudydemo251209
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
@@ -27,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +42,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composestudydemo251209.ui.theme.ComposeStudyDemo251209Theme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
@@ -46,6 +51,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            StudyCoroutine()
         }
     }
 }
@@ -213,37 +219,38 @@ fun TextCell(text: String, modifier: Modifier = Modifier) {
     )
 }
 
-@Preview(
-    showBackground = true,
-    showSystemUi = true,
-)
-@Composable
-fun RowColDemoPreview() {
-    RowColDemoScreen()
-}
-
 //@Preview(
 //    showBackground = true,
 //    showSystemUi = true,
 //)
 @Composable
-fun Preview() {
-    val txt = remember { mutableStateOf("GOOD") }
-    ComposeStudyDemo251209Theme {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            ModiStudyScreen()
-            Spacer(modifier = Modifier.height(10.dp))
-            CustomImage(
-                image = R.drawable.yoshi,
-                Modifier
-                    .border(width = 2.dp, color = Color.Black)
-                    .padding(all = 10.dp)
-                    .clip(shape = RoundedCornerShape(60.dp))
-            )
+fun RowColDemoPreview() {
+    RowColDemoScreen()
+}
+
+suspend fun performSlowTask() {
+    Log.d("coroutin test", "performSlowTask Start")
+    delay(5000)
+    Log.d("coroutin test", "performSlowTask End")
+}
+
+@Composable
+fun StudyCoroutine() {
+    val coroutineScope = rememberCoroutineScope()
+
+    Button(onClick = {
+        coroutineScope.launch {
+            performSlowTask()
         }
+    }) {
+        Text("5 sec")
     }
+}
+
+@Preview(
+    showBackground = true,
+)
+@Composable
+fun Preview() {
+    StudyCoroutine()
 }
