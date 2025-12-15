@@ -11,6 +11,7 @@ import androidx.compose.animation.core.Spring.DampingRatioHighBouncy
 import androidx.compose.animation.core.Spring.StiffnessVeryLow
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -70,10 +71,13 @@ fun MotionDemo() {
             BoxPosition.Start -> 0.dp
             BoxPosition.End -> screenWidth - boxSideLength
         },
-        animationSpec = spring(
-            dampingRatio = DampingRatioHighBouncy,
-            stiffness = StiffnessVeryLow,
-            ),
+        animationSpec = keyframes {
+            durationMillis = 1000
+            100.dp.at(10)
+            110.dp.at(500)
+            200.dp.at(700)
+            230.dp.at(20)
+        },
     )
 
 
