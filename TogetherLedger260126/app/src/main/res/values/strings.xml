@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">TogetherLedger</string>
+    <string name="daily_screen">일별 조회</string>
+    <string name="back_button">뒤로</string>
+    <string name="no_item_description">No data.\nTap + to add.</string>
+    <string name="transaction_detail_title">항목 조회</string>
+    <string name="transaction_edit_title">편집</string>
+    <string name="transaction_entry_title">입력</string>
+    <string name="save_action">저장</string>
+    <string name="transaction_name_req">이름을 입력해주세요</string>
+    <string name="transaction_amount_req">금액을 입력해주세요</string>
+    <string name="required_fields">필수 입력</string>
+</resources>
