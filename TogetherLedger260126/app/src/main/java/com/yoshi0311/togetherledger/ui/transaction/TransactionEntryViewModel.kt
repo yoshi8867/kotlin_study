@@ -42,5 +42,5 @@ data class TransactionDetails(
     val timestamp: String = "",
     val amount: String = "",
     val assetType: String = "",
-    val isIncome: String = "",
+    val isIncome: Boolean = false,
 )

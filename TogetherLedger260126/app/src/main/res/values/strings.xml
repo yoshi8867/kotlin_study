@@ -8,7 +8,11 @@
     <string name="transaction_entry_title">입력</string>
     <string name="save_action">저장</string>
     <string name="transaction_name_req">*이름</string>
-    <string name="transaction_amount_req">*금액</string>
     <string name="transaction_category_req">구분</string>
+    <string name="transaction_timestamp_req">*시각</string>
+    <string name="transaction_content_req">*내용</string>
+    <string name="transaction_amount_req">*금액</string>
+    <string name="transaction_asset_type_req">자산</string>
+    <string name="transaction_is_income_req">*지출/수입</string>
     <string name="required_fields">*필수 입력</string>
 </resources>
