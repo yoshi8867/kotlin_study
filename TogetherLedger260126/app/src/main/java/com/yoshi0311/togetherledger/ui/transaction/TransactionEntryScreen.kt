@@ -205,8 +205,20 @@ fun TransactionInputForm(
             onSelected = {
                 onValueChange(transactionDetails.copy(category = it))
             },
+            fieldName = stringResource(R.string.transaction_category_req),
             enabled = true,
         )
+
+        CategoryComboBox(
+            categories = listOf("현금", "하나카드", "국민은행"),
+            selected = transactionDetails.assetType,
+            onSelected = {
+                onValueChange(transactionDetails.copy(assetType = it))
+            },
+            fieldName = stringResource(R.string.transaction_asset_type_req),
+            enabled = true,
+        )
+
         if (enabled) {
             Text(
                 text = stringResource(R.string.required_fields),
@@ -222,7 +234,8 @@ fun CategoryComboBox(
     categories: List<String> = listOf(),
     selected: String,
     onSelected: (String) -> Unit,
-    enabled: Boolean
+    fieldName: String,
+    enabled: Boolean,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -234,7 +247,7 @@ fun CategoryComboBox(
             value = selected,
             onValueChange = {},
             readOnly = true,
-            label = { Text(stringResource(R.string.transaction_category_req)) },
+            label = { Text(fieldName) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
             modifier = Modifier
                 .menuAnchor()
