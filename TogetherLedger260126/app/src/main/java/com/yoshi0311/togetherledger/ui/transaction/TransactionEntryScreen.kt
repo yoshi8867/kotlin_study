@@ -75,7 +75,7 @@ fun TransactionEntryScreen(
             onTransactionValueChange = viewModel::updateUiState,
             onSaveClick = {
                 coroutineScope.launch {
-//                    viewModel.saveItem()
+                    viewModel.saveTransaction()
                     navigateBack()
                 }
             },
@@ -99,8 +99,9 @@ fun TransactionEntryBody(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_large))
+        modifier = modifier
+            .padding(dimensionResource(id = R.dimen.padding_medium)),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_large)),
     ) {
         TransactionInputForm(
             transactionDetails = transactionUiState.transactionDetails,
@@ -168,6 +169,20 @@ fun TransactionInputForm(
                 }
             }
         }
+
+        OutlinedTextField(
+            value = transactionDetails.timeStamp,
+            onValueChange = { onValueChange(transactionDetails.copy(timeStamp = it)) },
+            label = { Text(stringResource(R.string.transaction_timestamp_req)) },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true
+        )
 
         OutlinedTextField(
             value = transactionDetails.amount,
@@ -281,7 +296,7 @@ private fun TransactionEntryScreenPreview() {
     TogetherLedgerTheme {
         TransactionEntryBody(transactionUiState = TransactionUiState(
             TransactionDetails(
-                name = "name(for test)", amount = "2000"
+                content = "content(for test)", amount = "2000"
             )
         ), onTransactionValueChange = {}, onSaveClick = {})
     }

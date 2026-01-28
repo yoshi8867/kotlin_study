@@ -1,11 +1,15 @@
 package com.yoshi0311.togetherledger.ui.transaction
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.yoshi0311.togetherledger.data.Transaction
+import com.yoshi0311.togetherledger.data.TransactionsRepository
+import kotlin.Int
 
-class TransactionEntryViewModel : ViewModel() {
+class TransactionEntryViewModel(private val transactionsRepository: TransactionsRepository) : ViewModel() {
 
     var transactionUiState by mutableStateOf(TransactionUiState())
         private set
@@ -17,14 +21,14 @@ class TransactionEntryViewModel : ViewModel() {
 
     suspend fun saveTransaction() {
         if (validateInput()) {
-//            itemsRepository.insertTransaction(transactionUiState.transactionDetails.toTransaction())
+            Log.d("test", "hello")
+            transactionsRepository.insertTransaction(transactionUiState.transactionDetails.toTransaction())
         }
     }
 
     private fun validateInput(uiState: TransactionDetails = transactionUiState.transactionDetails): Boolean {
         return with(uiState) {
-            true // 일단 true, (검증 안 함)
-//            name.isNotBlank() && price.isNotBlank() && quantity.isNotBlank()
+            content.isNotBlank() && timeStamp.isNotBlank() && amount.isNotBlank()
         }
     }
 }
@@ -36,11 +40,20 @@ data class TransactionUiState(
 
 data class TransactionDetails(
     val id: Int = 0,
-    val name: String = "", // 나중에 지울 것
     val category: String = "",
     val content: String = "",
-    val timestamp: String = "",
+    val timeStamp: String = "",
     val amount: String = "",
     val assetType: String = "",
     val isIncome: Boolean = false,
+)
+
+fun TransactionDetails.toTransaction(): Transaction = Transaction(
+    id = id,
+    category = category,
+    content = content,
+    timeStamp = timeStamp,
+    amount = amount.toIntOrNull() ?: 0,
+    assetType = assetType,
+    isIncome = isIncome,
 )
